@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div style="display: flex; justify-content: center; margin-top: 25px">
+    <button onclick="open2()">open</button>
+    <button onclick="download2()">download</button>
+</div>
+<div style="display: flex; justify-content: center; margin-top: 10px">
+    <canvas id="canvas1" width="150px" height="150px"
+            style="background-color:#eee; border: thick double #2e2959;"></canvas>
+</div>
+<div style="display: flex; justify-content: center; margin-top: 10px">
+    <button onclick="send2()">send</button>
+    <button onclick="clear1()">clear</button>
+</div>
+<div id="result1" style="display: flex; justify-content: center;">
+
+</div>
+<div style="display: flex; justify-content: center; margin-top: 25px">
+    <label for="right1-input"></label><input type="text" id="right1-input" style="width: 25px;"></input>
+    <button onclick="right1()">save</button>
+</div>
+</body>
+<script>
+    let send2Result
+    let canvas = document.getElementById("canvas1"),
+        context = canvas.getContext("2d"),
+        mouse = {x: 0, y: 0},
+        draw = false
+    canvas.addEventListener("mousedown", function (e) {
+        let ClientRect = this.getBoundingClientRect();
+        mouse.x = e.clientX - ClientRect.left;
+        mouse.y = e.clientY - ClientRect.top;
+        draw = true;
+        context.beginPath();
+        context.moveTo(mouse.x, mouse.y);
+    })
+    canvas.addEventListener("mousemove", function (e) {
+        if (draw === true) {
+            let ClientRect = this.getBoundingClientRect();
+            mouse.x = e.clientX - ClientRect.left;
+            mouse.y = e.clientY - ClientRect.top;
+            context.lineTo(mouse.x, mouse.y);
+            context.stroke();
+        }
+    })
+    canvas.addEventListener("mouseup", function (e) {
+        let ClientRect = this.getBoundingClientRect();
+        mouse.x = e.clientX - ClientRect.left;
+        mouse.y = e.clientY - ClientRect.top;
+        context.lineTo(mouse.x, mouse.y);
+        context.stroke();
+        context.closePath();
+        draw = false;
+    })
+    function open2() {
+        canvas.toBlob((blob) => window.open(URL.createObjectURL(blob), '_blank'));
+    }
+    function download2() {
+        let downloadLink = document.createElement('a');
+        downloadLink.setAttribute('download', 'CanvasAsImage2.png');
+        let canvas = document.getElementById('canvas1');
+        let dataURL = canvas.toDataURL('image/png');
+        let url = dataURL.replace(/^data:image\/png/, 'data:application/octet-stream');
+        downloadLink.setAttribute('href', url);
+        downloadLink.click();
+    }
+    async function send2() {
+        let blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        let formData = new FormData();
+        formData.append("image", blob);
+        let response = await fetch('http://localhost:8000/images', {
+            method: 'POST',
+            body: formData
+        });
+        send2Result = await response.json();
+        console.log(send2Result)
+        const result1 = document.getElementById("result1");
+        result1.textContent = JSON.stringify(send2Result)
+    }
+
+    function clear1() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    async function right1() {
+        const result2 = document.getElementById("right1-input");
+        let response = await fetch('http://localhost:8080/result', {
+            method: 'POST',
+            body: JSON.stringify({id: send2Result.id, result: result2.value}),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        });
+        let right1Result = await response.json();
+        console.log(right1Result)
+        clear1()
+    }
+
+</script>
+</html>
