@@ -10,6 +10,8 @@ from fastapi.responses import RedirectResponse, HTMLResponse
 from typing import Optional
 import urllib
 
+from predict import adapt, predict
+
 app = FastAPI()
 
 app.mount("/index", StaticFiles(directory="static", html=True), name="static")
@@ -32,11 +34,13 @@ async def create_upload_file(
 ):
     filename = f"{uuid.uuid4()}.png"
     contents = await image.read()
+    d = adapt(contents)
+    r = predict(d)
 
     with open(f"{IMAGEDIR}{filename}", "wb") as f:
         f.write(contents)
 
-    return {"filename": filename}
+    return {"filename": filename, "r": str(r)}
 
 
 import uvicorn
