@@ -1,19 +1,10 @@
-from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi import FastAPI, File, UploadFile
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, Form, File, UploadFile, status
+from fastapi.responses import RedirectResponse
+
 import os
-from random import randint
 import uuid
-from fastapi import FastAPI, Request, status, Depends, Form
-from fastapi.responses import RedirectResponse, HTMLResponse
-from typing import Optional
-import urllib
-from dataclasses import dataclass
 from typing import Annotated
-
-from fastapi import FastAPI, Form
-
 from predict import adapt, predict
 
 app = FastAPI()
@@ -31,9 +22,9 @@ async def root():
 async def root():
     return {"message": "Hello World"}
 
+
 @app.post("/save")
 async def save_file(right: Annotated[str, Form()], image: UploadFile = File(...)):
-
     if not os.path.exists(f"{IMAGEDIR}{right}"):
         os.makedirs(f"{IMAGEDIR}{right}")
 
