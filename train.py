@@ -1,10 +1,11 @@
+import os
+import numpy
 import numpy as np
 import tensorflow as tf
-import keras
-import os
 from PIL import Image
-import numpy
 from tensorflow.keras import utils
+
+print(tf.__version__)
 
 training = '..\\mnist_png\\training'
 testing = '..\\mnist_png\\testing'
@@ -96,10 +97,15 @@ for i in range(10):
 
 plt.show()
 
-model = keras.models.load_model('model/mnist-1.keras')
-history = model.fit(x_train, y_train, batch_size=128, epochs=2, validation_data=(x_test, y_test), verbose=1)
+model = tf.keras.models.load_model('model/mnist-1.keras')
+history = model.fit(x_train, y_train, batch_size=128, epochs=5, validation_data=(x_test, y_test), verbose=1)
 
 print(history.history['accuracy'])
 print(history.history['val_accuracy'])
 
-model.save('model/mnist-2.keras')
+import time
+
+ts = int(time.time())
+file_path = f"model/mnist-1-{ts}"
+tf.keras.saving.save_model(model=model, filepath=file_path, save_format="tf")
+# https://github.com/keras-team/keras-core/issues/855

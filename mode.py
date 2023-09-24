@@ -1,14 +1,12 @@
-from tensorflow.keras.models import Sequential
+import tensorflow as tf
 from tensorflow.keras.layers import Dense, Conv2D
-from tensorflow.keras.layers import MaxPooling2D
 from tensorflow.keras.layers import Dropout, SpatialDropout2D, BatchNormalization
 from tensorflow.keras.layers import Flatten
+from tensorflow.keras.layers import MaxPooling2D
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
-import tensorflow as tf
-import keras as k
 
 print(tf.__version__)
-print(k.__version__)
 
 model = Sequential()
 model.add(Conv2D(16, (3, 3), activation='relu', input_shape=(28, 28, 1)))
