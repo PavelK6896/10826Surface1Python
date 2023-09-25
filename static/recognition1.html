@@ -6,8 +6,21 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>recognition1</title>
+
+    <style>
+        .dot {
+            height: 10px;
+            width: 10px;
+            background-color: #e84945cc;
+            border-radius: 50%;
+            display: inline-block;
+        }
+    </style>
+
+
 </head>
 <body style="background: #202124;     margin: 0;    color: #bdc1c6;">
+<span class="dot" id="dot1"></span>Server
 <div style="display: flex; justify-content: center; margin-top: 25px">
     <button onclick="open2()">open</button>
     <button onclick="download2()">download</button>
@@ -17,7 +30,7 @@
             style="background-color:#eee; border: thick double #2e2959;"></canvas>
 </div>
 <div style="display: flex; justify-content: center; margin-top: 10px">
-    <button onclick="send2()">send</button>
+<!--    <button onclick="send2()">send</button>-->
     <button onclick="clear1()">clear</button>
 </div>
 <div id="result1" style="display: flex; justify-content: center; margin-top: 15px; font-size: 1.7rem;">
@@ -36,6 +49,17 @@
         const save = document.getElementById("save-id");
         save.style.display = 'flex';
     }
+
+    base = 'https://bbaq58umu5n4e6a8h113.containers.yandexcloud.net'
+    fetch(base + '/message', {
+        method: 'GET',
+    }).then(f => {
+        const save = document.getElementById("dot1");
+        save.style.backgroundColor = 'green';
+    }).catch(c => {
+        const save = document.getElementById("dot1");
+        save.style.backgroundColor = 'red';
+    })
 
 
     let send2Result
