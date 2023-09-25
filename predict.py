@@ -6,7 +6,7 @@ from PIL import Image, ImageOps, ImageEnhance
 
 print(tf.__version__)
 # https://github.com/keras-team/keras-core/issues/855
-model = tf.keras.saving.load_model(filepath='model/mnist-1-1695561596')
+model = tf.keras.saving.load_model(filepath='model/mnist-1-1695634354')
 
 fill_color = (252, 252, 252)
 
