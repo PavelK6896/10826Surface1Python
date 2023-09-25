@@ -15,12 +15,40 @@
             border-radius: 50%;
             display: inline-block;
         }
+
+        .loader-small {
+            border: 5px solid #f3f3f3;
+            -webkit-animation: spin 1s linear infinite;
+            animation: spin 1s linear infinite;
+            border-top: 5px solid rgba(80, 175, 65, 0.8);
+            border-bottom: 5px solid rgba(48, 88, 117, 0.8);
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 
 
 </head>
 <body style="background: #202124;     margin: 0;    color: #bdc1c6;">
 <span class="dot" id="dot1"></span>Server
+
+<div id="interval-loader-1" style="position: absolute; margin-top: 25px;">
+    <div class="loader-small"></div>
+    <span class="">please wait until the server wakes up</span>
+    <div class="" id="interval1"></div>
+</div>
+
+
 <div style="display: flex; justify-content: center; margin-top: 25px">
     <button onclick="open2()">open</button>
     <button onclick="download2()">download</button>
@@ -30,7 +58,7 @@
             style="background-color:#eee; border: thick double #2e2959;"></canvas>
 </div>
 <div style="display: flex; justify-content: center; margin-top: 10px">
-<!--    <button onclick="send2()">send</button>-->
+    <!--    <button onclick="send2()">send</button>-->
     <button onclick="clear1()">clear</button>
 </div>
 <div id="result1" style="display: flex; justify-content: center; margin-top: 15px; font-size: 1.7rem;">
@@ -50,15 +78,29 @@
         save.style.display = 'flex';
     }
 
+    intervalStart = 12
+    const interval = setInterval(() => {
+        const i = document.getElementById("interval1");
+        i.textContent = intervalStart + 'sec';
+        --intervalStart
+    }, 1000);
+
+
     base = 'https://bbaq58umu5n4e6a8h113.containers.yandexcloud.net'
     fetch(base + '/message', {
         method: 'GET',
     }).then(f => {
         const save = document.getElementById("dot1");
         save.style.backgroundColor = 'green';
+        clearInterval(interval);
+        const loader = document.getElementById("interval-loader-1");
+        loader.style.display = 'none';
     }).catch(c => {
         const save = document.getElementById("dot1");
         save.style.backgroundColor = 'red';
+        clearInterval(interval);
+        const loader = document.getElementById("interval-loader-1");
+        loader.style.display = 'none';
     })
 
 
